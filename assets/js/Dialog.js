@@ -14,6 +14,25 @@ const dialogInteractions = () => {
     // Store current transition
     let currentTransition = null;
 
+    const positionDialog = () => {
+        const buttonRect = openButton.getBoundingClientRect();
+        const dialogRect = dialog.getBoundingClientRect();
+        const viewportHeight = window.innerHeight;
+        const viewportWidth = window.innerWidth;
+
+        // Calculate positions with margins
+        const margin = 16;
+        const left = Math.min(Math.max(margin, buttonRect.left), viewportWidth - dialogRect.width - margin);
+        const top = buttonRect.top + buttonRect.height + dialogRect.height > viewportHeight
+            ? Math.max(margin, buttonRect.top - dialogRect.height - margin)
+            : Math.min(viewportHeight - dialogRect.height - margin, buttonRect.bottom + margin);
+
+        // Apply positions
+        dialog.style.position = 'absolute';
+        dialog.style.left = `${left}px`;
+        dialog.style.top = `${top}px`;
+    };
+
     const openDialog = async () => {
         // Cancel any ongoing transition
         if (currentTransition) {
@@ -23,12 +42,8 @@ const dialogInteractions = () => {
 
         if (!document.startViewTransition) {
             previousActiveElement = document.activeElement;
-            dialog.showModal(); // Use showModal instead of show for native backdrop
-            const buttonRect = openButton.getBoundingClientRect();
-            const dialogRect = dialog.getBoundingClientRect();
-            dialog.style.position = 'absolute';
-            dialog.style.left = `${buttonRect.left}px`;
-            dialog.style.top = `${buttonRect.top - dialogRect.height - 10}px`;
+            dialog.showModal();
+            positionDialog();
             closeButton.focus();
             return;
         }
@@ -36,12 +51,8 @@ const dialogInteractions = () => {
         // Use View Transitions API
         currentTransition = document.startViewTransition(() => {
             previousActiveElement = document.activeElement;
-            dialog.showModal(); // Use showModal instead of show for native backdrop
-            const buttonRect = openButton.getBoundingClientRect();
-            const dialogRect = dialog.getBoundingClientRect();
-            dialog.style.position = 'absolute';
-            dialog.style.left = `${buttonRect.left}px`;
-            dialog.style.top = `${buttonRect.top - dialogRect.height - 10}px`;
+            dialog.showModal();
+            positionDialog();
             closeButton.focus();
         });
 
@@ -96,6 +107,13 @@ const dialogInteractions = () => {
     dialog.addEventListener("click", (event) => {
         if (event.target === dialog) {
             closeDialog();
+        }
+    });
+
+    // Handle window resize
+    window.addEventListener("resize", () => {
+        if (dialog.open) {
+            positionDialog();
         }
     });
 }
