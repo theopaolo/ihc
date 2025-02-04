@@ -1,4 +1,4 @@
-import dialogInteractions from "./js/dialog";
+import dialogInteractions from "/js/dialog.js";
 
 dialogInteractions();
 
