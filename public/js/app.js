@@ -27,8 +27,8 @@ likebtn.addEventListener('click', async (event) => {
     event.preventDefault();
     await fetch('http://localhost:3000/like', { method: 'POST' });
     updateLikes();
-    this.classList.add("active");
-    setTimeout(() => this.classList.remove("active"), 1000);
+    likebtn.classList.add("active");
+    setTimeout(() => likebtn.classList.remove("active"), 1000);
 });
 
 updateLikes();
