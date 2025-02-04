@@ -14,7 +14,6 @@ wrapper.addEventListener('mouseenter', () => {
     wrapper.style.transform = '';
 });
 
-
 const likebtn = document.querySelector('.like');
 
 async function updateLikes() {
